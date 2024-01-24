@@ -9,6 +9,19 @@ const various_Id_OfClothingProducts = new Schema({
         type: String,
         required: true,
     },
+    color: {
+        type: String,
+        required: true,
+    },
+    size: {
+        type: String,
+        required: true,
+    },
+    quantity: {
+        type: Number,
+        required: true,
+        default: 1
+    },
     
     
 }, { _id: false }
@@ -22,6 +35,11 @@ const various_Id_OfElectronicsProducts = new Schema({
         type: String,
         required: true,
     },
+    quantity: {
+        type: Number,
+        required: true,
+        default: 1
+    }
     
     
 }, { _id: false }
@@ -35,6 +53,11 @@ const various_Id_OfMiscProducts = new Schema({
         type: String,
         required: true,
     },
+    quantity: {
+        type: Number,
+        required: true,
+        default: 1
+    }
     
     
 }, { _id: false }
