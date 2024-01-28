@@ -70,13 +70,59 @@ const variousModelsOfProducts = new Schema({
 }, { _id: false }
 );
 
-const cartSchema = new Schema(
+const billingDetails = new Schema({
+    baseAmount: {
+        type: Number,
+        required: true,
+    },
+    taxAmount: {
+        type: Number,
+        required: true,
+    },
+    discountAny: {
+        type: Number,
+        required: true,
+    },
+    deliveryCharges: {
+        type: Number,
+        required: true,
+    },
+    finalAmount: {
+        type: Number,
+        required: true,
+    },
+    
+    
+}, { _id: false }
+);
+
+
+const ordersPlacedArray = new Schema({
+   
+    productsOrdersPlaced: variousModelsOfProducts,
+
+    billingDetails: billingDetails,
+    
+}, 
+{
+    timestamps: true
+}, { _id: false }
+);
+
+const ordersPlacedSchema = new Schema(
     {
         userId: {
             type: Schema.Types.ObjectId,
             ref: "User"
         },
-        productsAdded: variousModelsOfProducts,
+        
+        ordersPlacedArray: [ordersPlacedArray],
+
+        status: {
+            type: String,
+            required: true,
+        },
+
 
     }, 
     {
@@ -86,4 +132,4 @@ const cartSchema = new Schema(
 
 // videoSchema.plugin(mongooseAggregatePaginate)
 
-export const Cart = mongoose.model("Cart", cartSchema)
+export const OrdersPlaced = mongoose.model("OrdersPlaced", ordersPlacedSchema)

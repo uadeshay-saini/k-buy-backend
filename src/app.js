@@ -23,6 +23,8 @@ import userRouter from './routes/user.routes.js'
 import videoRouter from "./routes/video.routes.js"
 import productsRouter from "./routes/products.routes.js"
 import cartRouter from "./routes/cart.routes.js"
+import ordersRouter from "./routes/orders.routes.js"
+
 // import commentRouter from "./routes/comment.routes.js"
 // import likeRouter from "./routes/like.routes.js"
 // import playlistRouter from "./routes/playlist.routes.js"
@@ -41,6 +43,9 @@ app.use("/api/v1/videos", videoRouter)
 app.use("/api/v1/products", productsRouter)
 
 app.use("/api/v1/cart", cartRouter)
+
+app.use("/api/v1/orders", ordersRouter)
+
 
 
 // http://localhost:8000/api/v1/users/register

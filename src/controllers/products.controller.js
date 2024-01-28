@@ -89,10 +89,10 @@ const addClothingProducts = asyncHandler(async (req, res) =>{
     try {
 
 
-        const {tag, gender, type, colorQuantityImages, title, description, fullDescription, brand } = req.body
+        const {tag, gender, type, colorQuantityImages, title, description, fullDescription, brand, price } = req.body
 
         if (
-         !(tag && gender && type && colorQuantityImages && title && description && fullDescription && brand)
+         !(tag && gender && type && colorQuantityImages && title && description && fullDescription && brand && price)
            ) {
                     throw new ApiError(400, "All fields are required")
                 }
@@ -105,7 +105,8 @@ const addClothingProducts = asyncHandler(async (req, res) =>{
                     title, 
                     description, 
                     fullDescription, 
-                    brand
+                    brand,
+                    price
                         })
 
             const createdProduct = await Clothing.findById(products._id)
@@ -213,10 +214,270 @@ const fetchSingleClothingProduct = asyncHandler(async (req, res) =>{
 
 })
 
+const addElectronicsProducts = asyncHandler(async (req, res) =>{
+    try {
 
+
+        const {tag, type, colorQuantityImages, title, description, fullDescription, brand, price } = req.body
+
+        if (
+         !(tag  && type && colorQuantityImages && title && description && fullDescription && brand && price)
+           ) {
+                    throw new ApiError(400, "All fields are required")
+                }
+
+                const products = await Electronics.create({
+                    tag,  
+                    type, 
+                    colorQuantityImages, 
+                    title, 
+                    description, 
+                    fullDescription, 
+                    brand,
+                    price
+                        })
+
+            const createdProduct = await Electronics.findById(products._id)
+            if (!createdProduct) {
+                        throw new ApiError(500, "Something went wrong while registering the product")
+                    }
+
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+    
+        return res
+        .status(201)
+        .json(
+            new ApiResponse(
+                201, 
+                {
+                    products
+                },
+                "Product created successfully"
+            )
+        )
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+
+    
+
+})
+const fetchAllElectronicsProducts = asyncHandler(async (req, res) =>{
+    try {
+        const page = req.query.page || 1; // Get the requested page from query parameters
+        const limit = 10; // Number of products to return in one page
+
+        const skip = (page - 1) * limit;
+
+        const products = await Electronics.find()
+            .skip(skip)
+            .limit(limit);
+
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+    
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200, 
+                {
+                    products
+                },
+                "Products fetched successfully"
+            )
+        )
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+
+    
+
+})
+
+const fetchSingleElectronicsProduct = asyncHandler(async (req, res) =>{
+    try {
+        const { _id } = req.body
+        if (
+            !(_id)
+              ) {
+                       throw new ApiError(400, "All fields are required")
+                   }
+
+        const productDetails = await Electronics.findById(_id)
+
+
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+    
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200, 
+                {
+                    productDetails
+                },
+                "Product fetched successfully"
+            )
+        )
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+
+    
+
+})
+
+const addMiscProducts = asyncHandler(async (req, res) =>{
+    try {
+
+
+        const {tag, type, colorQuantityImages, title, description, fullDescription, brand, price } = req.body
+
+        if (
+         !(tag  && type && colorQuantityImages && title && description && fullDescription && brand && price)
+           ) {
+                    throw new ApiError(400, "All fields are required")
+                }
+
+                const products = await Misc.create({
+                    tag,  
+                    type, 
+                    colorQuantityImages, 
+                    title, 
+                    description, 
+                    fullDescription, 
+                    brand,
+                    price
+                        })
+
+            const createdProduct = await Misc.findById(products._id)
+            if (!createdProduct) {
+                        throw new ApiError(500, "Something went wrong while registering the product")
+                    }
+
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+    
+        return res
+        .status(201)
+        .json(
+            new ApiResponse(
+                201, 
+                {
+                    products
+                },
+                "Product created successfully"
+            )
+        )
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+
+    
+
+})
+const fetchAllMiscProducts = asyncHandler(async (req, res) =>{
+    try {
+        const page = req.query.page || 1; // Get the requested page from query parameters
+        const limit = 10; // Number of products to return in one page
+
+        const skip = (page - 1) * limit;
+
+        const products = await Misc.find()
+            .skip(skip)
+            .limit(limit);
+
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+    
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200, 
+                {
+                    products
+                },
+                "Products fetched successfully"
+            )
+        )
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+
+    
+
+})
+
+const fetchSingleMiscProduct = asyncHandler(async (req, res) =>{
+    try {
+        const { _id } = req.body
+        if (
+            !(_id)
+              ) {
+                       throw new ApiError(400, "All fields are required")
+                   }
+
+        const productDetails = await Misc.findById(_id)
+
+
+        const options = {
+            httpOnly: true,
+            secure: true
+        }
+    
+        return res
+        .status(200)
+        .json(
+            new ApiResponse(
+                200, 
+                {
+                    productDetails
+                },
+                "Product fetched successfully"
+            )
+        )
+    } catch (error) {
+        console.error('Error:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+
+
+    
+
+})
 
 export {
     addClothingProducts,
     fetchAllClothingProducts,
-    fetchSingleClothingProduct
+    fetchSingleClothingProduct,
+    addElectronicsProducts,
+    fetchAllElectronicsProducts,
+    fetchSingleElectronicsProduct,
+    addMiscProducts,
+    fetchAllMiscProducts,
+    fetchSingleMiscProduct
 }

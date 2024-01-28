@@ -313,6 +313,9 @@ const deleteProductToCart = asyncHandler(async (req, res) => {
       }
 });
 
+
+
+
 const fetchSingleClothingProduct = asyncHandler(async (req, res) => {
   try {
     const { _id } = req.body;
