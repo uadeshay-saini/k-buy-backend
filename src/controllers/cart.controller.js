@@ -18,7 +18,12 @@ import mongoose from "mongoose";
 //we can use it to vary any amount of quantity, we can INCREASE DECREASE QUANTITY as we like
 const addProductToCart = asyncHandler(async (req, res) => {
   try {
-    const { userId, productsAdded } = req.body;
+    const { 
+      // userId,
+       productsAdded } = req.body;
+
+    const user = req.user._id
+    const userId = user.toString()
 
     if (!(userId && productsAdded)) {
       throw new ApiError(400, "All fields are required");
@@ -160,8 +165,13 @@ const addProductToCart = asyncHandler(async (req, res) => {
 // DELETE the product from the cart
 const deleteProductToCart = asyncHandler(async (req, res) => {
     try {
-        const { userId, productsAdded } = req.body;
+        const {
+          //  userId,
+            productsAdded } = req.body;
     
+            const user = req.user._id
+            const userId = user.toString()
+
         if (!(userId && productsAdded)) {
           throw new ApiError(400, "All fields are required");
         }
@@ -316,37 +326,37 @@ const deleteProductToCart = asyncHandler(async (req, res) => {
 
 
 
-const fetchSingleClothingProduct = asyncHandler(async (req, res) => {
-  try {
-    const { _id } = req.body;
-    if (!_id) {
-      throw new ApiError(400, "All fields are required");
-    }
+// const fetchSingleClothingProduct = asyncHandler(async (req, res) => {
+//   try {
+//     const { _id } = req.body;
+//     if (!_id) {
+//       throw new ApiError(400, "All fields are required");
+//     }
 
-    const productDetails = await Clothing.findById(_id);
+//     const productDetails = await Clothing.findById(_id);
 
-    const options = {
-      httpOnly: true,
-      secure: true,
-    };
+//     const options = {
+//       httpOnly: true,
+//       secure: true,
+//     };
 
-    return res.status(200).json(
-      new ApiResponse(
-        200,
-        {
-          productDetails,
-        },
-        "Product fetched successfully"
-      )
-    );
-  } catch (error) {
-    console.error("Error:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
-});
+//     return res.status(200).json(
+//       new ApiResponse(
+//         200,
+//         {
+//           productDetails,
+//         },
+//         "Product fetched successfully"
+//       )
+//     );
+//   } catch (error) {
+//     console.error("Error:", error.message);
+//     res.status(500).json({ error: "Internal Server Error" });
+//   }
+// });
 
 export {
   addProductToCart,
   deleteProductToCart,
-  fetchSingleClothingProduct,
+  // fetchSingleClothingProduct,
 };

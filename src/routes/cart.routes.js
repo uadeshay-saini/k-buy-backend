@@ -1,5 +1,5 @@
 import { Router } from "express";
-import {addProductToCart, deleteProductToCart, fetchSingleClothingProduct} from "../controllers/cart.controller.js"
+import {addProductToCart, deleteProductToCart} from "../controllers/cart.controller.js"
 import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 

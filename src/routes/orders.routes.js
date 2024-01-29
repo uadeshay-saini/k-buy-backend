@@ -8,7 +8,7 @@ const router = Router()
 
 //secured routes
 // router.route("/clothing/fetchallclothingproducts").post(fetchAllClothingProducts)
-router.route("/calculatecheckoutdetails").post(calculateCheckoutDetails)
+router.route("/calculatecheckoutdetails").post(verifyJWT, calculateCheckoutDetails)
 router.route("/addtoordersplaced").post(addToOrdersPlaced)
 router.route("/movetoordersdelivered").post(moveToOrdersDelivered)
 

@@ -24,7 +24,10 @@ import mongoose from "mongoose";
 //we can use it to vary any amount of quantity, we can INCREASE DECREASE QUANTITY as we like
 const calculateCheckoutDetails = asyncHandler(async (req, res) => {
   try {
-    const { userId, productsAdded } = req.body;
+    const {  productsAdded } = req.body;
+    
+    const user = req.user._id
+    const userId = user.toString()
 
     if (!(userId && productsAdded)) {
       throw new ApiError(400, "All fields are required");
@@ -103,7 +106,10 @@ const calculateCheckoutDetails = asyncHandler(async (req, res) => {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 const addToOrdersPlaced = asyncHandler(async (req, res) => {
   try {
-    const { userId, ordersPlacedArray } = req.body;
+    const {  ordersPlacedArray } = req.body;
+    
+    const user = req.user._id
+    const userId = user.toString()
 
     if (!(userId && ordersPlacedArray)) {
       throw new ApiError(400, "All fields are required");
@@ -244,6 +250,7 @@ const addToOrdersPlaced = asyncHandler(async (req, res) => {
 const moveToOrdersDelivered = asyncHandler(async (req, res) => {
     try {
         const { userId } = req.body;
+
         const foundOrdersDelivered = await OrdersDelivered.findOne({ userId: userId });
 
         if(!foundOrdersDelivered){
