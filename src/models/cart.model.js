@@ -39,7 +39,11 @@ const various_Id_OfElectronicsProducts = new Schema({
         type: Number,
         required: true,
         default: 1
-    }
+    },
+    // color: {
+    //     type: String,
+    //     required: true,
+    // },
     
     
 }, { _id: false }
@@ -57,7 +61,11 @@ const various_Id_OfMiscProducts = new Schema({
         type: Number,
         required: true,
         default: 1
-    }
+    },
+    // color: {
+    //     type: String,
+    //     required: true,
+    // },
     
     
 }, { _id: false }

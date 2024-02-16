@@ -24,7 +24,7 @@ const addProductToCart = asyncHandler(async (req, res) => {
 
     const user = req.user._id
     const userId = user.toString()
-
+console.log(productsAdded)
     if (!(userId && productsAdded)) {
       throw new ApiError(400, "All fields are required");
     }
@@ -156,11 +156,68 @@ const addProductToCart = asyncHandler(async (req, res) => {
       );
     }
   } catch (error) {
-    console.error("Error:", error.message);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+    if (error instanceof ApiError) {
+      // Send an error response with the status code and message
+      res.status(error.statusCode).json({ success: false, statusCode: error.statusCode, message: error.message, errors: error.errors });
+    } else {
+      // Handle other types of errors
+      console.error(error);
+      res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
 });
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+const fetchCart = asyncHandler(async (req, res) =>{
+  // req body -> data
+  // username or email
+  //find the user
+  //password check
+  //access and referesh token
+  //send cookie
+try{
+  
+  const user = req.user._id
+  const userId = user.toString()
+  if (!(userId)) {
+    throw new ApiError(400, "Try To Login Again");
+  }
+
+  const foundCart = await Cart.findOne({ userId: userId });
+
+  //create a new cart if there is no cart already present in the database
+  if (!foundCart) {
+    throw new ApiError(404, "Cart does not exist")
+
+  }
+ 
+  return res
+  .status(200)
+  .json(
+      new ApiResponse(
+          200, 
+          {
+              foundCart
+          },
+          "Cart Fetched Successfully"
+          )
+          )
+          
+      }
+    catch (error) {
+      if (error instanceof ApiError) {
+        // Send an error response with the status code and message
+        res.status(error.statusCode).json({ success: false, statusCode: error.statusCode, message: error.message, errors: error.errors });
+      } else {
+        // Handle other types of errors
+        console.error(error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+      }
+  }
+})
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // DELETE the product from the cart
 const deleteProductToCart = asyncHandler(async (req, res) => {
@@ -236,9 +293,10 @@ const deleteProductToCart = asyncHandler(async (req, res) => {
             let lengthOfFoundCartArrayBeforeFiltering = foundCart.productsAdded.electronics.length
              foundCart.productsAdded.electronics = await foundCart.productsAdded.electronics.filter(
                 (item) => (
-                  item._Id_OfProduct.toString() !== productsAdded.electronics[0]._Id_OfProduct &&
-                  item.size.toString() !== productsAdded.electronics[0].size &&
-                  item.color.toString() !== productsAdded.electronics[0].color
+                  item._Id_OfProduct.toString() !== productsAdded.electronics[0]._Id_OfProduct 
+                  // jab color add krega schema me se in dono ke add products me se jb isko un comment kr dio
+                  // &&
+                  // item.color.toString() !== productsAdded.electronics[0].color
                   )
                   );
             let lengthOfFoundCartArrayAfterFiltering = foundCart.productsAdded.electronics.length
@@ -267,9 +325,10 @@ const deleteProductToCart = asyncHandler(async (req, res) => {
             let lengthOfFoundCartArrayBeforeFiltering = foundCart.productsAdded.misc.length
              foundCart.productsAdded.misc = await foundCart.productsAdded.misc.filter(
                 (item) => (
-                  item._Id_OfProduct.toString() !== productsAdded.misc[0]._Id_OfProduct &&
-                  item.size.toString() !== productsAdded.misc[0].size &&
-                  item.color.toString() !== productsAdded.misc[0].color
+                  item._Id_OfProduct.toString() !== productsAdded.misc[0]._Id_OfProduct 
+                  // &&
+                  // item.color.toString() !== productsAdded.misc[0].color
+                  // jab color add krega schema me se in dono ke add products me se jb isko un comment kr dio
                   )
                   );
             let lengthOfFoundCartArrayAfterFiltering = foundCart.productsAdded.misc.length
@@ -318,9 +377,15 @@ const deleteProductToCart = asyncHandler(async (req, res) => {
           );
         }
       } catch (error) {
-        console.error("Error:", error.message);
-        res.status(500).json({ error: "Internal Server Error" });
-      }
+        if (error instanceof ApiError) {
+          // Send an error response with the status code and message
+          res.status(error.statusCode).json({ success: false, statusCode: error.statusCode, message: error.message, errors: error.errors });
+        } else {
+          // Handle other types of errors
+          console.error(error);
+          res.status(500).json({ success: false, message: "Internal Server Error" });
+        }
+    }
 });
 
 
@@ -358,5 +423,6 @@ const deleteProductToCart = asyncHandler(async (req, res) => {
 export {
   addProductToCart,
   deleteProductToCart,
+  fetchCart
   // fetchSingleClothingProduct,
 };

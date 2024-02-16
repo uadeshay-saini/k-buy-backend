@@ -36,6 +36,8 @@ const registerUser = asyncHandler( async (req, res) => {
     // check for user creation
     // return res
 
+try {
+    
 
     const {fullName, email, username, password } = req.body
     //console.log("email: ", email);
@@ -97,6 +99,16 @@ console.log(fullName)
         new ApiResponse(200, createdUser, "User registered Successfully")
     )
 
+} catch (error) {
+    if (error instanceof ApiError) {
+      // Send an error response with the status code and message
+      res.status(error.statusCode).json({ success: false, statusCode: error.statusCode, message: error.message, errors: error.errors });
+    } else {
+      // Handle other types of errors
+      console.error(error);
+      res.status(500).json({ success: false, message: "Internal Server Error" });
+    }
+}
 } )
 
 const loginUser = asyncHandler(async (req, res) =>{
@@ -106,7 +118,7 @@ const loginUser = asyncHandler(async (req, res) =>{
     //password check
     //access and referesh token
     //send cookie
-
+try{
     const {email, username, password} = req.body
     console.log(email);
 
@@ -145,7 +157,8 @@ if(isPasswordValid){
     
     const options = {
         httpOnly: true,
-        secure: true
+        secure: true,
+        sameSite: 'None'
     }
     
     return res
@@ -165,6 +178,126 @@ if(isPasswordValid){
             )
             
         }
+    } catch (error) {
+        if (error instanceof ApiError) {
+          // Send an error response with the status code and message
+          res.status(error.statusCode).json({ success: false, statusCode: error.statusCode, message: error.message, errors: error.errors });
+        } else {
+          // Handle other types of errors
+          console.error(error);
+          res.status(500).json({ success: false, message: "Internal Server Error" });
+        }
+    }
+})
+
+
+const checkIfUserLoggedIn = asyncHandler(async (req, res) =>{
+    // req body -> data
+    // username or email
+    //find the user
+    //password check
+    //access and referesh token
+    //send cookie
+try{
+        const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
+        
+        console.log(req.cookies?.accessToken);
+        if (!token) {
+            throw new ApiError(404, "User Is Not LoggedIn")
+        }
+    
+        const decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET)
+    
+        const user = await User.findById(decodedToken?._id).select("-password -refreshToken")
+    
+        if (!user) {
+            
+            throw new ApiError(404, "User Is Not LoggedIn")
+        }
+    
+  
+        // const user = req.user._id
+        // const userId = user.toString()
+        // if (!(userId)) {
+        //   throw new ApiError(400, "User Is Not LoggedIn");
+        // }
+    
+   console.log(user._id);
+
+    const isUserRegistered = await User.findOne({ _id: user._id })
+
+    if (!isUserRegistered) {
+        throw new ApiError(404, "User Is Not LoggedIn")
+    }
+    
+    const options = {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None'
+    }
+    
+    return res
+    .status(200)
+    .json(
+        new ApiResponse(
+            200, 
+            {
+                user: "User is LoggedIn"
+                
+            },
+            "User is LoggedIn"
+            )
+            )
+            
+        
+    } catch (error) {
+        if (error instanceof ApiError) {
+          // Send an error response with the status code and message
+          res.status(error.statusCode).json({ success: false, statusCode: error.statusCode, message: error.message, errors: error.errors });
+        } else {
+          // Handle other types of errors
+          console.error(error);
+          res.status(500).json({ success: false, message: "Internal Server Error" });
+        }
+    }
+})
+
+const logoutUser = asyncHandler(async(req, res) => {
+    // await User.findByIdAndUpdate(
+    //     req.user._id,
+    //     {
+    //         $unset: {
+    //             refreshToken: 1 // this removes the field from document
+    //         }
+    //     },
+    //     {
+    //         new: true
+    //     }
+    // )
+try {
+    
+
+    const options = {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'None'
+    }
+
+    return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .json(new ApiResponse(200, {}, "User logged Out Successfully"))
+
+} catch (error) {
+    if (error instanceof ApiError) {
+        // Send an error response with the status code and message
+        res.status(error.statusCode).json({ success: false, statusCode: error.statusCode, message: error.message, errors: error.errors });
+      } else {
+        // Handle other types of errors
+        console.error(error);
+        res.status(500).json({ success: false, message: "Internal Server Error" });
+      }
+}
 })
 
 const refreshAccessToken = asyncHandler(async (req, res) => {
@@ -237,30 +370,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
 
 
 
-const logoutUser = asyncHandler(async(req, res) => {
-    // await User.findByIdAndUpdate(
-    //     req.user._id,
-    //     {
-    //         $unset: {
-    //             refreshToken: 1 // this removes the field from document
-    //         }
-    //     },
-    //     {
-    //         new: true
-    //     }
-    // )
 
-    const options = {
-        httpOnly: true,
-        secure: true
-    }
-
-    return res
-    .status(200)
-    .clearCookie("accessToken", options)
-    // .clearCookie("refreshToken", options)
-    .json(new ApiResponse(200, {}, "User logged Out"))
-})
 
 
 const getCurrentUser = asyncHandler(async(req, res) => {
@@ -371,6 +481,7 @@ const updateUserCoverImage = asyncHandler(async(req, res) => {
 export {
     registerUser,
     loginUser,
+    checkIfUserLoggedIn,
     logoutUser,
     refreshAccessToken,
     changeCurrentPassword,

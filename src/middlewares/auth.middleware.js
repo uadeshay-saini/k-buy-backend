@@ -3,11 +3,11 @@ import { asyncHandler } from "../utils/asyncHandler.js";
 import jwt from "jsonwebtoken"
 import { User } from "../models/user.model.js";
 
-export const verifyJWT = asyncHandler(async(req, _, next) => {
+export const verifyJWT = asyncHandler(async(req, res, next) => {
     try {
         const token = req.cookies?.accessToken || req.header("Authorization")?.replace("Bearer ", "")
         
-        // console.log(token);
+        console.log(req.cookies?.accessToken);
         if (!token) {
             throw new ApiError(401, "Unauthorized request")
         }
@@ -24,7 +24,16 @@ export const verifyJWT = asyncHandler(async(req, _, next) => {
         req.user = user;
         next()
     } catch (error) {
+        next(error)
         throw new ApiError(401, error?.message || "Invalid access token")
-    }
+        // if (error instanceof ApiError) {
+        //     // Send an error response with the status code and message
+        //     res.status(error.statusCode).json({ success: false, statusCode: error.statusCode, message: error.message, errors: error.errors });
+        //   } else {
+        //     // Handle other types of errors
+        //     console.error(error);
+        //     res.status(500).json({ success: false, message: "Internal Server Error" });
+        //   }  
+          }
     
 })
